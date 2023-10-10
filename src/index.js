@@ -24,9 +24,7 @@ class FunctionsAlphabeticallySortedChecker {
         this.reporter.error(
           expectedFunction,
           this.ruleId,
-          `Invalid functions order. Expected: ${JSON.stringify(
-            orderedFunctions.map(({ name }) => name)
-          )}`
+          `Invalid functions order. Expected: ${JSON.stringify(orderedFunctions.map(({ name }) => name))}`
         )
         break
       }
@@ -34,4 +32,33 @@ class FunctionsAlphabeticallySortedChecker {
   }
 }
 
-module.exports = [FunctionsAlphabeticallySortedChecker]
+class EventsAlphabeticallySortedChecker {
+  constructor(_reporter, _config) {
+    this.ruleId = 'events-alphabetically-sorted'
+
+    this.reporter = _reporter
+    this.config = _config
+  }
+
+  ContractDefinition(_ctx) {
+    const children = _ctx.subNodes
+    const initialEvents = children.filter(({ type, name }) => type === 'EventDefinition' && name)
+    const orderedEvents = [...initialEvents].sort((_a, _b) => (_a.name < _b.name ? -1 : 1))
+
+    for (let i = 0; i < orderedEvents.length; i++) {
+      const expectedEvent = orderedEvents[i]
+      const currentEvent = initialEvents[i]
+
+      if (expectedEvent.name !== currentEvent.name) {
+        this.reporter.error(
+          expectedEvent,
+          this.ruleId,
+          `Invalid events order. Expected: ${JSON.stringify(orderedEvents.map(({ name }) => name))}`
+        )
+        break
+      }
+    }
+  }
+}
+
+module.exports = [FunctionsAlphabeticallySortedChecker, EventsAlphabeticallySortedChecker]

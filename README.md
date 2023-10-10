@@ -26,7 +26,11 @@ npm install -g solhint
 
 ```json
 {
-  "plugins": ["code-organizer"]
+  "plugins": ["code-organizer"],
+  "rules": {
+    "code-organizer/functions-alphabetically-sorted": "warn",
+    "code-organizer/events-alphabetically-sorted": "warn"
+  }
 }
 ```
 
